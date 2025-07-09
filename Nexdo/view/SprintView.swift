@@ -1,24 +1,14 @@
-//
-//  ContentView.swift
-//  Nexdo
-//
-//  Created by Marcel Gast on 09.07.25.
-//
-
 import SwiftUI
 
-struct ContentView: View {
+struct SprintView: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("SprintView")
         }
         .padding()
     }
 }
 
-#Preview {
-    ContentView()
-}
