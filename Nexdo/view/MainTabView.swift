@@ -1,7 +1,6 @@
 import SwiftUI
 
-
-struct TabView: View {
+struct MainTabView: View {
     @State private var selectedTab = 0
 
     var body: some View {

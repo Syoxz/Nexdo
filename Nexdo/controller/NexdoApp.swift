@@ -4,7 +4,7 @@
     struct NexdoApp: App {
         var body: some Scene {
             WindowGroup {
-                TabView()
+                MainTabView()
             }
         }
     }
