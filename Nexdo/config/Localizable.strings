@@ -1,0 +1,12 @@
+"task_name" = "Name der Aufgabe";
+"task_description" = "Beschreibung";
+"task_new" = "Neue Aufgabe";
+"task_due_date" = "Fälligkeitsdatum";
+"task_add" = "Aufgabe hinzufügen"
+"remove_due_date" = "Entferne Fälligkeitsdatum";
+
+
+// Classics
+"cancel" = "Abbrechen";
+"save" = "Speichern";
+"delete" = "Löschen";
