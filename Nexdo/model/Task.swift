@@ -10,12 +10,16 @@ class Task {
     var createdAt: Date
     var dueDate: Date?
 
-    init(id: UUID = UUID(), name: String, taskDescription: String, status: TaskStatus, createdAt: Date = Date(), dueDate: Date? = nil) {
+    @Relationship var sprint: Sprint?
+
+    init(id: UUID = UUID(), name: String, taskDescription: String, status: TaskStatus, createdAt: Date = Date(), dueDate: Date? = nil, sprint: Sprint? = nil) {
         self.id = id
         self.name = name
         self.taskDescription = taskDescription
         self.status = status.rawValue
         self.createdAt = createdAt
         self.dueDate = dueDate
+        self.sprint = sprint
     }
 }
+

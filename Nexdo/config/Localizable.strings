@@ -2,7 +2,7 @@
 "task_description" = "Beschreibung";
 "task_new" = "Neue Aufgabe";
 "task_due_date" = "Fälligkeitsdatum";
-"task_add" = "Aufgabe hinzufügen"
+"task_add" = "Aufgabe hinzufügen";
 "remove_due_date" = "Entferne Fälligkeitsdatum";
 
 

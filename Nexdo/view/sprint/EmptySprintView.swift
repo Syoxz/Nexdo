@@ -1,0 +1,43 @@
+import SwiftUI
+
+struct EmptySprintView: View {
+    var body: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            Image(systemName: "calendar.badge.exclamationmark")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.accentColor.opacity(0.6))
+
+            VStack(spacing: 8) {
+                Text("No Sprints Yet")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+
+                Text("Start organizing your work by creating a sprint.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
+            }
+
+            NavigationLink(destination: CreateSprintView()) {
+                Label("Create Sprint", systemImage: "plus")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+                    .shadow(color: Color.accentColor.opacity(0.3), radius: 4, x: 0, y: 2)
+            }
+            .padding(.horizontal, 40)
+
+            Spacer()
+        }
+        .padding()
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+    }
+}
