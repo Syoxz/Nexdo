@@ -9,13 +9,12 @@ struct CreateSprintView: View {
     @State private var endDate: Date = Date().addingTimeInterval(7 * 24 * 60 * 60)
     @State private var status: SprintStatus = .planned
     @State private var selectedTaskIDs: Set<UUID> = []
+    @State private var calendarId: Int = 0
 
     private static let openRaw = TaskStatus.open.rawValue
 
     @Query(
-        filter: #Predicate<Task> { task in
-            task.status == openRaw
-        },
+        filter: Task.openTasks(),
         sort: \Task.createdAt,
         order: .reverse
     )
@@ -32,11 +31,10 @@ struct CreateSprintView: View {
 
                         Card {
                             VStack(spacing: 12) {
-                                DatePicker("Start", selection: $startDate, displayedComponents: .date)
-                                    .datePickerStyle(.compact)
+                                AutoCloseDatePicker(date: $startDate, label: "Start")
                                 Divider()
-                                DatePicker("End", selection: $endDate, displayedComponents: .date)
-                                    .datePickerStyle(.compact)
+                                AutoCloseDatePicker(date: $endDate, label: "End")
+
                             }
                             .padding()
                         }
@@ -103,13 +101,33 @@ struct CreateSprintView: View {
 
     private func saveSprint() {
         let selectedTasks = openTasks.filter { selectedTaskIDs.contains($0.id) }
-        let sprint = Sprint(
+        let sprint = createSprint(with: selectedTasks)
+
+        assignTasks(selectedTasks, to: sprint)
+
+        modelContext.insert(sprint)
+
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save sprint: \(error)")
+        }
+    }
+
+    private func createSprint(with tasks: [Task]) -> Sprint {
+        Sprint(
             startDate: startDate,
             endDate: endDate,
             status: status,
-            tasks: selectedTasks
+            tasks: tasks
         )
-        modelContext.insert(sprint)
-        try? modelContext.save()
     }
+
+    private func assignTasks(_ tasks: [Task], to sprint: Sprint) {
+        for task in tasks {
+            task.status = TaskStatus.planned.rawValue
+            task.sprint = sprint
+        }
+    }
+
 }

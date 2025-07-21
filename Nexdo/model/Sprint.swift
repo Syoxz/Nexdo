@@ -19,3 +19,12 @@ class Sprint {
         self.tasks = tasks
     }
 }
+
+extension Sprint {
+    static func currentSprint() -> Predicate<Sprint> {
+        let currentDate = Date.now
+        return #Predicate<Sprint> { sprint in
+            sprint.startDate <= currentDate && sprint.endDate >= currentDate
+        }
+    }
+}

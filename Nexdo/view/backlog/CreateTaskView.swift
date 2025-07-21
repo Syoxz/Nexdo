@@ -22,8 +22,7 @@ struct CreateTaskView: View {
                     if showingDatePicker {
                         HStack {
                             Image(systemName: "calendar.badge.plus")
-                            DatePicker("task_due_date", selection: $dueDate, displayedComponents: .date)
-                                .labelsHidden()
+                            AutoCloseDatePicker(date: $dueDate, label: "task_due_date")
                         }
                     } else {
                         Button {

@@ -2,94 +2,122 @@ import SwiftUI
 import SwiftData
 
 struct SprintView: View {
-    @Environment(\.modelContext) private var modelContext
-    @State private var navigationPath: [Task] = []
+    @State private var showCreateSprint = false
+    @State private var showConfig = false
+    @State private var showSprints = false
 
-    @Query(sort: \Sprint.startDate, order: .reverse)
-    private var storedSprints: [Sprint]
 
-    @State private var currentIndex: Int = 0
+    @Query(filter: Sprint.currentSprint())
+    private var currentSprints: [Sprint]
+
 
 
     var body: some View {
         NavigationStack {
-            if storedSprints.isEmpty {
-               EmptySprintView()
-            } else {
-                let currentSprint = storedSprints[currentIndex]
-                header(for: currentSprint)
-                if currentSprint.endDate == Date() {
-                    Text ("Sprint completed on \(formatted(currentSprint.endDate))")
-                } else {
-                    actionButtons(for: currentSprint)
-                }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 20) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            currentSprintCard()
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(20)
+                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
 
-                Text("Tasks")
-                    .font(.title2)
-                    .bold()
-                    .padding(.horizontal)
-                
-                TaskListView(tasks: currentSprint.tasks, path: $navigationPath)
+                    // MARK: - Card 2: Quick Actions
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Quick Actions")
+                            .font(.headline)
+
+                        HStack(spacing: 16) {
+                            SprintButton(title: "Create", icon: "plus.circle.fill", color: .blue) {
+                                showCreateSprint = true
+                            }
+
+
+                            SprintButton(title: "Sprints", icon: "list.bullet.rectangle", color: .green) {
+                                showSprints = true
+                            }
+                        
+
+                            SprintButton(title: "Config", icon: "gearshape.fill", color: .orange) {
+                                showConfig = true
+                            }
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(20)
+                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+
+                    Spacer(minLength: 40)
+                }
+                .padding()
+                .navigationDestination(isPresented: $showSprints) {
+                      SprintDetailView()
+                }
+            }
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            .sheet(isPresented: $showCreateSprint) {
+                CreateSprintView()
+            }
+            .sheet(isPresented: $showConfig) {
+                CreateSprintView()
             }
         }
-        .background(Color(.systemGroupedBackground))
     }
 
-    private func header(for sprint: Sprint) -> some View {
-        HStack {
-            Button(action: {
-                if currentIndex > 0 { currentIndex -= 1 }
-            }) {
-                Image(systemName: "chevron.left")
-                    .foregroundColor(currentIndex > 0 ? .accentColor : .gray)
-            }
-            .disabled(currentIndex == 0)
 
-            Spacer()
-            Text("\(formatted(sprint.startDate)) - \(formatted(sprint.endDate))")
+    private func currentSprintCard() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Current Sprint", systemImage: "flag.fill")
                 .font(.headline)
-            Spacer()
+                .foregroundColor(.blue)
+            
+            if let sprint = currentSprints.first {
+                let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: sprint.endDate).day ?? 0
+                let totalTasksCount = sprint.tasks.count
+                let completedTasksCount = sprint.tasks.filter { $0.status == TaskStatus.done.rawValue }.count
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Start: \(sprint.startDate.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Text("Ends in \(daysRemaining) day\(daysRemaining == 1 ? "" : "s")")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
 
-            Button(action: {
-                if currentIndex < storedSprints.count - 1 { currentIndex += 1 }
-            }) {
-                Image(systemName: "chevron.right")
-                    .foregroundColor(currentIndex < storedSprints.count - 1 ? .accentColor : .gray)
-            }
-            .disabled(currentIndex == storedSprints.count - 1)
-        }
-        .padding(.horizontal)
-        .padding(.top)
-    }
+                    if totalTasksCount > 0 {
+                        let progress = Double(completedTasksCount) / Double(totalTasksCount)
+                        ProgressView(value: progress) {
+                            Text("Progress")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
 
-    private func actionButtons(for sprint: Sprint) -> some View {
-        HStack {
-            Spacer()
-            if sprint.status == SprintStatus.active.rawValue {
-                Button("Stop") {
-                    updateStatus(.planned, for: sprint)
+                        Text("\(completedTasksCount) of \(totalTasksCount) tasks completed")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
-            } else if sprint.status == SprintStatus.planned.rawValue {
-                Button("Start") {
-                    updateStatus(.active, for: sprint)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.green)
+            } else {
+                Text("No Current Sprint")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             }
         }
-        .padding(.horizontal)
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .cornerRadius(20)
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
 
-    private func updateStatus(_ status: SprintStatus, for sprint: Sprint) {
-        sprint.status = status.rawValue
-        try? modelContext.save()
-    }
 
-    private func formatted(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
-    }
 }

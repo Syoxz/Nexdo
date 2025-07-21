@@ -23,3 +23,11 @@ class Task {
     }
 }
 
+extension Task {
+    static func openTasks() -> Predicate<Task> {
+        let openRaw = TaskStatus.open.rawValue
+        return #Predicate<Task> { task in
+            task.status == openRaw
+        }
+    }
+}

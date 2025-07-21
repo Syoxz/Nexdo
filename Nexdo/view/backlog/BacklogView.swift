@@ -10,7 +10,7 @@ struct BacklogView: View {
 
     @Query(
         filter: #Predicate<Task> { task in
-            task.status == openRaw || task.status == plannedRaw
+            task.status == openRaw
         },
         sort: \Task.createdAt,
         order: .reverse
