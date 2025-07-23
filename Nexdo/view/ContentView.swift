@@ -5,12 +5,6 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }.tag(0)
-            
             BacklogView()
                 .tabItem {
                     Image(systemName: "list.bullet.rectangle")

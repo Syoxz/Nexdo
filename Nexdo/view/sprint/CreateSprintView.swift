@@ -34,7 +34,6 @@ struct CreateSprintView: View {
                                 AutoCloseDatePicker(date: $startDate, label: "Start")
                                 Divider()
                                 AutoCloseDatePicker(date: $endDate, label: "End")
-
                             }
                             .padding()
                         }
@@ -51,8 +50,6 @@ struct CreateSprintView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal)
-                        
-                            
                         } else {
                             LazyVStack(spacing: 10) {
                                 ForEach(openTasks) { task in
@@ -65,7 +62,6 @@ struct CreateSprintView: View {
                             .padding(.horizontal)
                         }
                     }
-
                     Spacer()
                 }
                 .padding(.top)
