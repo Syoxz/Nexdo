@@ -9,6 +9,8 @@ struct SprintDetailView: View {
     private var storedSprints: [Sprint]
 
     @State private var currentIndex: Int = 0
+    @State private var showDeleteDialog = false
+    @State private var sprintToDelete: Sprint?
 
 
     var body: some View {
@@ -32,6 +34,17 @@ struct SprintDetailView: View {
                 TaskListView(tasks: currentSprint.tasks, path: $navigationPath)
             }
         }
+        .confirmationDialog("Are you sure you want to delete this sprint?",
+                            isPresented: $showDeleteDialog,
+                            titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                if let sprint = sprintToDelete {
+                    deleteSprint(for: sprint)
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        }
+
         .background(Color(.systemGroupedBackground))
     }
 
@@ -72,6 +85,12 @@ struct SprintDetailView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(.red)
             } else if sprint.status == SprintStatus.planned.rawValue {
+                Button("Delete") {
+                    sprintToDelete = sprint
+                    showDeleteDialog = true
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
                 NavigationLink(destination: EditSprintView(sprint: sprint)) {
                     Text("Edit")
                 }
@@ -87,6 +106,22 @@ struct SprintDetailView: View {
         .padding(.horizontal)
     }
 
+    private func deleteSprint(for sprint: Sprint) {
+        for task in sprint.tasks {
+            task.status = TaskStatus.open.rawValue
+        }
+        modelContext.delete(sprint)
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to delete sprint: \(error)")
+            //showError("Failed to delete sprint. Please try again.")
+        }
+    }
+
+        
+    
     private func updateStatus(_ status: SprintStatus, for sprint: Sprint) {
         sprint.status = status.rawValue
         try? modelContext.save()

@@ -10,6 +10,9 @@ struct CreateSprintView: View {
     @State private var status: SprintStatus = .planned
     @State private var selectedTaskIDs: Set<UUID> = []
     @State private var calendarId: Int = 0
+    @State private var showAlert = false
+    @State private var errorMessage = ""
+
 
     private static let openRaw = TaskStatus.open.rawValue
 
@@ -79,11 +82,19 @@ struct CreateSprintView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         saveSprint()
-                        dismiss()
+                        if !showAlert {
+                            dismiss()
+                        }
                     }
                     .disabled(startDate >= endDate)
                 }
             }
+            .alert("Error", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
+
         }
     }
 
@@ -96,9 +107,27 @@ struct CreateSprintView: View {
     }
 
     private func saveSprint() {
+        let existingSprints = fetchExistingSprints()
+
+        // Check for existing sprints with overlapping date range
+        let overlappingSprints = existingSprints.filter { existing in
+            return (startDate <= existing.endDate && endDate >= existing.startDate)
+        }
+        if let overlap = overlappingSprints.first {
+            // Show error message to user
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .medium
+            let start = dateFormatter.string(from: overlap.startDate)
+            let end = dateFormatter.string(from: overlap.endDate)
+            
+            showError("You can't create a Sprint in this Date Range because there is a Sprint from \(start) to \(end) already.")
+            return
+        }
+        
         let selectedTasks = openTasks.filter { selectedTaskIDs.contains($0.id) }
         let sprint = createSprint(with: selectedTasks)
-
+        
+        
         assignTasks(selectedTasks, to: sprint)
 
         modelContext.insert(sprint)
@@ -109,6 +138,23 @@ struct CreateSprintView: View {
             print("Failed to save sprint: \(error)")
         }
     }
+    
+    private func showError(_ message: String) {
+        errorMessage = message
+        showAlert = true
+    }
+
+    
+    private func fetchExistingSprints() -> [Sprint] {
+        let descriptor = FetchDescriptor<Sprint>()
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch sprints: \(error)")
+            return []
+        }
+    }
+
 
     private func createSprint(with tasks: [Task]) -> Sprint {
         Sprint(

@@ -9,10 +9,10 @@ struct EditSprintView: View {
     @State private var endDate: Date
     @State private var status: String
     @State private var selectedTaskIDs: Set<UUID> = []
-
+    @State private var showAlert = false
+    @State private var errorMessage = ""
     let sprint: Sprint
 
-    // Open Tasks Query
     @Query(
         filter: Task.openTasks(),
         sort: \Task.createdAt,
@@ -20,12 +20,10 @@ struct EditSprintView: View {
     )
     private var openTasks: [Task]
 
-    // Computed list of tasks already in the sprint
     private var currentTasks: [Task] {
         sprint.tasks
     }
 
-    // MARK: - Init
     init(sprint: Sprint) {
         self.sprint = sprint
         _startDate = State(initialValue: sprint.startDate)
@@ -34,7 +32,6 @@ struct EditSprintView: View {
         _selectedTaskIDs = State(initialValue: Set(sprint.tasks.map { $0.id }))
     }
 
-    // MARK: - Body
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -59,15 +56,38 @@ struct EditSprintView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         editSprint()
-                        dismiss()
+                        if !showAlert {
+                            dismiss()
+                        }
                     }
                     .disabled(startDate >= endDate)
                 }
             }
+            .alert("Error", isPresented: $showAlert) {
+                    Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
         }
     }
 
-    // MARK: - View Sections
+
+    //TODO: Später in einen Service auslagern für beide Views
+    private func showError(_ message: String) {
+        errorMessage = message
+        showAlert = true
+    }
+
+
+    private func fetchExistingSprints() -> [Sprint] {
+        let descriptor = FetchDescriptor<Sprint>()
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch sprints: \(error)")
+            return []
+        }
+    }
 
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -77,9 +97,9 @@ struct EditSprintView: View {
 
             Card {
                 VStack(spacing: 12) {
-                    DatePicker("Start", selection: $startDate, displayedComponents: .date)
+                    AutoCloseDatePicker(date: $startDate, label: "Start")
                     Divider()
-                    DatePicker("End", selection: $endDate, displayedComponents: .date)
+                    AutoCloseDatePicker(date: $endDate, label: "End")
                 }
                 .padding()
             }
@@ -112,8 +132,6 @@ struct EditSprintView: View {
         }
     }
 
-    // MARK: - Actions
-
     private func toggleSelection(for task: Task) {
         if selectedTaskIDs.contains(task.id) {
             selectedTaskIDs.remove(task.id)
@@ -123,10 +141,26 @@ struct EditSprintView: View {
     }
 
     private func editSprint() {
+        let existingSprints = fetchExistingSprints()
+
+        let overlappingSprints = existingSprints.filter { existing in
+            return (sprint.id != existing.id && (startDate <= existing.endDate && endDate >= existing.startDate))
+        }
+        if let overlap = overlappingSprints.first {
+            // Show error message to user
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .medium
+            let start = dateFormatter.string(from: overlap.startDate)
+            let end = dateFormatter.string(from: overlap.endDate)
+            
+            showError("You can't create a Sprint in this Date Range because there is a Sprint from \(start) to \(end) already.")
+            return
+        }
+        
         let selectedCurrent = currentTasks.filter { selectedTaskIDs.contains($0.id) }
         let selectedOpen = openTasks.filter { selectedTaskIDs.contains($0.id) }
         let selectedTasks = selectedCurrent + selectedOpen
-
+        
         for task in currentTasks where !selectedTaskIDs.contains(task.id) {
             unassign(task)
         }
@@ -134,9 +168,8 @@ struct EditSprintView: View {
         for task in selectedTasks {
             assign(task, to: sprint)
         }
-
+        
         updateSprint(with: selectedTasks)
-
         do {
             try modelContext.save()
         } catch {
@@ -145,13 +178,25 @@ struct EditSprintView: View {
     }
 
     private func assign(_ task: Task, to sprint: Sprint) {
-        task.status = TaskStatus.planned.rawValue
+        if (isTaskDone(task)) {
+            task.status = TaskStatus.done.rawValue
+        } else {
+            task.status = TaskStatus.planned.rawValue
+        }
         task.sprint = sprint
     }
 
     private func unassign(_ task: Task) {
-        task.status = TaskStatus.open.rawValue
+        if (isTaskDone(task)) {
+            task.status = TaskStatus.done.rawValue
+        } else {
+            task.status = TaskStatus.open.rawValue
+        }
         task.sprint = nil
+    }
+    
+    private func isTaskDone(_ task: Task) -> Bool {
+        return task.status == TaskStatus.done.rawValue
     }
 
     private func updateSprint(with tasks: [Task]) {
