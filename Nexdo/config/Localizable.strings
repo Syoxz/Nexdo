@@ -6,12 +6,17 @@
 "remove_due_date" = "Entferne Fälligkeitsdatum";
 
 
-// Classics
+// Basics
 "cancel" = "Abbrechen";
 "save" = "Speichern";
 "delete" = "Löschen";
-
+"not_implemented" = "Nicht implementiert";
 
 
 // Sprint
 "create_sprint_success" = "Sprint erfolgreich erstellt";
+
+
+// Header/Title
+"sprint_config" = "Sprint Konfiguration";
+

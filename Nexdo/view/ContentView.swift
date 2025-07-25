@@ -30,6 +30,8 @@ struct ContentView: View {
                     SprintDetailView()
                 case .sprintEdit(let sprint):
                     EditSprintView(sprint: sprint)
+                case .sprintConfig:
+                    SprintConfigView()
                 case .taskDetail(let task):
                     TaskDetailView(task: task)
                 }

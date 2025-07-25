@@ -43,7 +43,7 @@ struct SprintView: View {
                             }
 
                             SprintButton(title: "Config", icon: "gearshape.fill", color: .orange) {
-                                navService.goToCreateSprint()
+                                navService.goToSprintConfig()
                             }
                         }
                     }
