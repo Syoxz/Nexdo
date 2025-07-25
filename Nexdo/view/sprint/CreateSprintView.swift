@@ -4,6 +4,7 @@ import SwiftData
 struct CreateSprintView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var navService: NavigationService
 
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date().addingTimeInterval(7 * 24 * 60 * 60)
@@ -12,7 +13,7 @@ struct CreateSprintView: View {
     @State private var calendarId: Int = 0
     @State private var showAlert = false
     @State private var errorMessage = ""
-
+    @State private var showToast = false
 
     private static let openRaw = TaskStatus.open.rawValue
 
@@ -24,14 +25,14 @@ struct CreateSprintView: View {
     private var openTasks: [Task]
 
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Dates")
                             .font(.title3.bold())
                             .padding(.horizontal)
-
+                        
                         Card {
                             VStack(spacing: 12) {
                                 AutoCloseDatePicker(date: $startDate, label: "Start")
@@ -42,12 +43,12 @@ struct CreateSprintView: View {
                         }
                         .padding(.horizontal)
                     }
-
+                    
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Assign Open Tasks")
                             .font(.title3.bold())
                             .padding(.horizontal)
-
+                        
                         if openTasks.isEmpty {
                             Text("No open tasks available... \nCreate tasks to assign them to this sprint in Backlog.")
                                 .font(.subheadline)
@@ -65,36 +66,35 @@ struct CreateSprintView: View {
                             .padding(.horizontal)
                         }
                     }
-                    Spacer()
                 }
                 .padding(.top)
             }
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
-            .navigationTitle("Create Sprint")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) {
-                        dismiss()
-                    }
+        }
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .navigationTitle("Create Sprint")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Save") {
+                    saveSprint()
                 }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveSprint()
-                        if !showAlert {
-                            dismiss()
-                        }
-                    }
-                    .disabled(startDate >= endDate)
+                .disabled(startDate >= endDate)
+            }
+        }
+        .overlay (
+            Group {
+                if showToast {
+                    ToastView(message: "create_sprint_success")
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .animation(.easeInOut, value: showToast)
                 }
-            }
-            .alert("Error", isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text(errorMessage)
-            }
-
+            },
+            alignment: .top
+        )
+        .alert("Error", isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
         }
     }
 
@@ -109,42 +109,46 @@ struct CreateSprintView: View {
     private func saveSprint() {
         let existingSprints = fetchExistingSprints()
 
-        // Check for existing sprints with overlapping date range
+        // Check for overlapping sprints
         let overlappingSprints = existingSprints.filter { existing in
             return (startDate <= existing.endDate && endDate >= existing.startDate)
         }
+
         if let overlap = overlappingSprints.first {
-            // Show error message to user
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .medium
-            let start = dateFormatter.string(from: overlap.startDate)
-            let end = dateFormatter.string(from: overlap.endDate)
-            
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            let start = formatter.string(from: overlap.startDate)
+            let end = formatter.string(from: overlap.endDate)
+
             showError("You can't create a Sprint in this Date Range because there is a Sprint from \(start) to \(end) already.")
             return
         }
-        
+
         let selectedTasks = openTasks.filter { selectedTaskIDs.contains($0.id) }
         let sprint = createSprint(with: selectedTasks)
-        
-        
         assignTasks(selectedTasks, to: sprint)
 
         modelContext.insert(sprint)
 
         do {
             try modelContext.save()
+            
+            showToast = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                showToast = false
+                dismiss()
+            }
         } catch {
             print("Failed to save sprint: \(error)")
+            showError("Failed to save sprint. Please try again.")
         }
     }
-    
+
     private func showError(_ message: String) {
         errorMessage = message
         showAlert = true
     }
 
-    
     private func fetchExistingSprints() -> [Sprint] {
         let descriptor = FetchDescriptor<Sprint>()
         do {
@@ -154,7 +158,6 @@ struct CreateSprintView: View {
             return []
         }
     }
-
 
     private func createSprint(with tasks: [Task]) -> Sprint {
         Sprint(
@@ -171,5 +174,4 @@ struct CreateSprintView: View {
             task.sprint = sprint
         }
     }
-
 }

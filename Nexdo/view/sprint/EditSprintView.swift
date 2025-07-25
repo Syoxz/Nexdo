@@ -33,7 +33,7 @@ struct EditSprintView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     dateSection

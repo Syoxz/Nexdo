@@ -10,3 +10,8 @@
 "cancel" = "Abbrechen";
 "save" = "Speichern";
 "delete" = "Löschen";
+
+
+
+// Sprint
+"create_sprint_success" = "Sprint erfolgreich erstellt";

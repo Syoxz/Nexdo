@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct EmptySprintView: View {
+    @EnvironmentObject private var navService: NavigationService
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()
@@ -24,7 +26,10 @@ struct EmptySprintView: View {
                     .padding(.horizontal, 32)
             }
 
-            NavigationLink(destination: CreateSprintView()) {
+         
+            Button(action: {
+                navService.goToCreateSprint()
+            }) {
                 Label("Create Sprint", systemImage: "plus")
                     .frame(maxWidth: .infinity)
                     .padding()

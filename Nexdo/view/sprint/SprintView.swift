@@ -2,18 +2,20 @@ import SwiftUI
 import SwiftData
 
 struct SprintView: View {
+    @EnvironmentObject var navService: NavigationService
+
     @State private var showCreateSprint = false
     @State private var showConfig = false
     @State private var showSprints = false
 
-
+    
     @Query(filter: Sprint.currentSprint())
     private var currentSprints: [Sprint]
-
-
-
+    
+    
+    
     var body: some View {
-        NavigationStack {
+        VStack() {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 20) {
@@ -26,52 +28,42 @@ struct SprintView: View {
                     .background(Color(.secondarySystemGroupedBackground))
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-
-                    // MARK: - Card 2: Quick Actions
+                    
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Quick Actions")
                             .font(.headline)
-
+                        
                         HStack(spacing: 16) {
                             SprintButton(title: "Create", icon: "plus.circle.fill", color: .blue) {
-                                showCreateSprint = true
+                                navService.goToCreateSprint()
                             }
-
-
+                            
                             SprintButton(title: "Sprints", icon: "list.bullet.rectangle", color: .green) {
-                                showSprints = true
+                                navService.goToSprintList()
                             }
-                        
 
                             SprintButton(title: "Config", icon: "gearshape.fill", color: .orange) {
-                                showConfig = true
+                                navService.goToCreateSprint()
                             }
                         }
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color(.secondarySystemGroupedBackground))
-                    .cornerRadius(20)
-                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-
-                    Spacer(minLength: 40)
                 }
                 .padding()
-                .navigationDestination(isPresented: $showSprints) {
-                      SprintDetailView()
-                }
+                .frame(maxWidth: .infinity)
+                .background(Color(.secondarySystemGroupedBackground))
+                .cornerRadius(20)
+                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+                
+                Spacer(minLength: 40)
             }
+            .padding()
+
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
-            .sheet(isPresented: $showCreateSprint) {
-                CreateSprintView()
-            }
-            .sheet(isPresented: $showConfig) {
-                CreateSprintView()
-            }
+            
         }
     }
-
-
+    
+    
     private func currentSprintCard() -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("Current Sprint", systemImage: "flag.fill")
@@ -91,7 +83,7 @@ struct SprintView: View {
                     Text("Ends in \(daysRemaining) day\(daysRemaining == 1 ? "" : "s")")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-
+                    
                     if totalTasksCount > 0 {
                         let progress = Double(completedTasksCount) / Double(totalTasksCount)
                         ProgressView(value: progress) {
@@ -100,7 +92,7 @@ struct SprintView: View {
                                 .foregroundColor(.secondary)
                         }
                         .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-
+                        
                         Text("\(completedTasksCount) of \(totalTasksCount) tasks completed")
                             .font(.footnote)
                             .foregroundColor(.secondary)
@@ -118,6 +110,4 @@ struct SprintView: View {
         .cornerRadius(20)
         .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
-
-
 }

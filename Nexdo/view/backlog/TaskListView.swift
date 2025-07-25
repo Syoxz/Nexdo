@@ -4,14 +4,15 @@ import SwiftData
 
 struct TaskListView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var navService: NavigationService
+
     let tasks: [Task]
-    @Binding var path: [Task]
 
     var body: some View {
         List {
             ForEach(tasks) { task in
                 Button {
-                    path.append(task)
+                    navService.goToTaskDetail(task)
                 } label: {
                     TaskRow(task: task, modelContext: modelContext)
                 }

@@ -2,22 +2,39 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab = 0
-    
+    @EnvironmentObject private var navService: NavigationService
+
     var body: some View {
-        TabView(selection: $selectedTab) {
-            BacklogView()
-                .tabItem {
-                    Image(systemName: "list.bullet.rectangle")
-                    Text("Backlog")
+        NavigationStack(path: $navService.path) {
+            TabView(selection: $selectedTab) {
+                BacklogView()
+                    .tabItem {
+                        Image(systemName: "list.bullet.rectangle")
+                        Text("Backlog")
+                    }
+                    .tag(1)
+
+                SprintView()
+                    .tabItem {
+                        Image(systemName: "timer")
+                        Text("Sprint")
+                    }
+                    .tag(2)
+            }
+            .accentColor(.blue)
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .createSprint:
+                    CreateSprintView()
+                case .sprintList:
+                    SprintDetailView()
+                case .sprintEdit(let sprint):
+                    EditSprintView(sprint: sprint)
+                case .taskDetail(let task):
+                    TaskDetailView(task: task)
                 }
-                .tag(1)
-            
-            SprintView()
-                .tabItem {
-                    Image(systemName: "timer")
-                    Text("Sprint")
-                }.tag(2)
+            }
         }
-        .accentColor(.blue)
     }
 }
+

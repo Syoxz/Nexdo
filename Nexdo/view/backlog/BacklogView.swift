@@ -3,7 +3,7 @@ import SwiftData
 
 struct BacklogView: View {
     @State private var showCreateTask = false
-    @State private var navigationPath: [Task] = []
+    @EnvironmentObject var navService: NavigationService
 
     private static let openRaw = TaskStatus.open.rawValue
     private static let plannedRaw = TaskStatus.planned.rawValue
@@ -18,15 +18,15 @@ struct BacklogView: View {
     private var tasks: [Task]
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        VStack() {
             VStack {
                 if tasks.isEmpty {
                     EmptyTaskView()
                 } else {
-                    TaskListView(tasks: tasks, path: $navigationPath)
+                    TaskListView(tasks: tasks)
                 }
                 Spacer()
-                if navigationPath.isEmpty {
+                if navService.path.isEmpty {
                     CreateTaskButton {
                         showCreateTask = true
                     }
@@ -36,9 +36,6 @@ struct BacklogView: View {
                 CreateTaskView()
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
-            }
-            .navigationDestination(for: Task.self) { task in
-                TaskDetailView(task: task)
             }
             .navigationBarBackButtonHidden(true)
         }
