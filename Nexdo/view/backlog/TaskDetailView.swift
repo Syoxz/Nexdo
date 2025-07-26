@@ -22,14 +22,10 @@ struct TaskDetailView: View {
 
             Section {
                 if task.dueDate != nil {
-                    DatePicker(
-                        "Due Date",
-                        selection: Binding<Date>(
-                            get: { task.dueDate ?? Date() },
-                            set: { task.dueDate = $0 }
-                        ),
-                        displayedComponents: .date
-                    )
+                    AutoCloseDatePicker(date: Binding<Date>(
+                        get: { task.dueDate ?? Date() },
+                        set: { task.dueDate = $0 }
+                    ), label: "task_due_date")
                 } else {
                     Button {
                         if task.dueDate == nil {

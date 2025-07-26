@@ -4,6 +4,7 @@ import SwiftData
 struct SprintDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var navService: NavigationService
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @Query(sort: \Sprint.startDate, order: .forward)
     private var storedSprints: [Sprint]
@@ -12,54 +13,106 @@ struct SprintDetailView: View {
     @State private var showDeleteDialog = false
     @State private var sprintToDelete: Sprint?
 
-
     var body: some View {
-        VStack {
-            if storedSprints.isEmpty {
-                EmptySprintView()
-            } else {
-                let currentSprint = storedSprints[currentIndex]
-                HeaderView(sprint: currentSprint,
-                           currentIndex: $currentIndex,
-                           maxIndex: storedSprints.count - 1)
-                if Calendar.current.isDateInToday(currentSprint.endDate) {
-                    Text("Sprint completed on \(formatted(currentSprint.endDate))")
-                        .padding()
+        ZStack {
+            VStack {
+                if storedSprints.isEmpty {
+                    EmptySprintView()
                 } else {
-                    ActionButtonsView(sprint: currentSprint,
-                                      onDelete: {
-                        sprintToDelete = currentSprint
-                        showDeleteDialog = true
-                    },
-                       onEdit: {
-                        navService.goToEditSprint(currentSprint)
-                    },
-                        onStatusChange: { status in
-                        updateStatus(status, for: currentSprint)
-                    })
-                    .padding()
+                    let currentSprint = storedSprints[currentIndex]
+                    HeaderView(sprint: currentSprint,
+                               currentIndex: $currentIndex,
+                               maxIndex: storedSprints.count - 1)
+                    if Calendar.current.isDateInToday(currentSprint.endDate) {
+                        Text("Sprint completed on \(formatted(currentSprint.endDate))")
+                            .padding()
+                    } else {
+                        ActionButtonsView(sprint: currentSprint,
+                                          onDelete: {
+                            sprintToDelete = currentSprint
+                            showDeleteDialog = true
+                        },
+                           onEdit: {
+                            navService.goToEditSprint(currentSprint)
+                        },
+                            onStatusChange: { status in
+                            updateStatus(status, for: currentSprint)
+                        })
+                        .padding()
+                    }
+                    
+                    Text("Tasks")
+                        .font(.title2)
+                        .bold()
+                        .padding(.horizontal)
+                    
+                    TaskListView(tasks: currentSprint.tasks)
                 }
-                
-                Text("Tasks")
-                    .font(.title2)
-                    .bold()
-                    .padding(.horizontal)
-                
-                TaskListView(tasks: currentSprint.tasks)
+            }
+            .navigationTitle(LocalizedStringKey("sprint_overview_title"))
+            .onAppear(perform: setInitialSprintIndex)
+            .background(Color(.systemGroupedBackground))
+            .confirmationDialog(
+                "Are you sure you want to delete this sprint?",
+                isPresented: Binding(
+                    get: { showDeleteDialog && horizontalSizeClass == .compact },
+                    set: { showDeleteDialog = $0 }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let sprint = sprintToDelete {
+                        deleteSprint(sprint)
+                    }
+                }
+                Button(LocalizedStringKey("cancel"), role: .cancel) {}
+            }
+
+            if showDeleteDialog && horizontalSizeClass == .regular {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        showDeleteDialog = false
+                    }
+
+                VStack(spacing: 20) {
+                    Text("Are you sure you want to delete this sprint?")
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                        .padding()
+
+                    HStack(spacing: 20) {
+                        Button("Cancel") {
+                            showDeleteDialog = false
+                        }
+                        .frame(minWidth: 80)
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+
+                        Button("Delete") {
+                            if let sprint = sprintToDelete {
+                                deleteSprint(sprint)
+                            }
+                            showDeleteDialog = false
+                        }
+                        .frame(minWidth: 80)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
+                }
+                .padding()
+                .background(Color(.systemBackground))
+                .cornerRadius(16)
+                .shadow(radius: 10)
+                .frame(maxWidth: 300)
+                .transition(.scale)
+                .zIndex(1)
             }
         }
-        .onAppear(perform: setInitialSprintIndex)
-        .confirmationDialog("Are you sure you want to delete this sprint?",
-                            isPresented: $showDeleteDialog,
-                            titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                if let sprint = sprintToDelete {
-                    deleteSprint(sprint)
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        }
-        .background(Color(.systemGroupedBackground))
+        .animation(.easeInOut, value: showDeleteDialog)
     }
 
     private func setInitialSprintIndex() {
@@ -89,7 +142,6 @@ struct SprintDetailView: View {
         }
     }
 
-
     private func updateStatus(_ status: SprintStatus, for sprint: Sprint) {
         sprint.status = status.rawValue
         try? modelContext.save()
@@ -99,14 +151,12 @@ struct SprintDetailView: View {
         Self.dateFormatter.string(from: date)
     }
 
-   public static let dateFormatter: DateFormatter = {
+    public static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter
     }()
 }
-
-
 
 private struct HeaderView: View {
     let sprint: Sprint
