@@ -9,9 +9,7 @@ struct BacklogView: View {
     private static let plannedRaw = TaskStatus.planned.rawValue
 
     @Query(
-        filter: #Predicate<Task> { task in
-            task.status == openRaw
-        },
+        filter: Task.openTasks(),
         sort: \Task.createdAt,
         order: .reverse
     )

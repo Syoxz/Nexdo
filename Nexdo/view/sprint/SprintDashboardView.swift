@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct SprintView: View {
+struct SprintDashboardView: View {
     @EnvironmentObject var navService: NavigationService
 
     @State private var showCreateSprint = false
@@ -30,11 +30,11 @@ struct SprintView: View {
                     .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
                     
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Quick Actions")
+                        Text(LocalizedStringKey("actions"))
                             .font(.headline)
                         
                         HStack(spacing: 16) {
-                            SprintButton(title: "Create", icon: "plus.circle.fill", color: .blue) {
+                            SprintButton(title: LocalizedStringKey("create"), icon: "plus.circle.fill", color: .blue) {
                                 navService.goToCreateSprint()
                             }
                             
@@ -42,7 +42,7 @@ struct SprintView: View {
                                 navService.goToSprintList()
                             }
 
-                            SprintButton(title: "Config", icon: "gearshape.fill", color: .orange) {
+                            SprintButton(title: LocalizedStringKey("config"), icon: "gearshape.fill", color: .orange) {
                                 navService.goToSprintConfig()
                             }
                         }
@@ -66,9 +66,14 @@ struct SprintView: View {
     
     private func currentSprintCard() -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Current Sprint", systemImage: "flag.fill")
-                .font(.headline)
-                .foregroundColor(.blue)
+            Label {
+                Text(LocalizedStringKey("current_sprint"))
+            } icon: {
+                Image(systemName: "flag.fill")
+            }
+            .font(.headline)
+            .foregroundColor(.blue)
+
             
             if let sprint = currentSprints.first {
                 let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: sprint.endDate).day ?? 0
@@ -87,7 +92,7 @@ struct SprintView: View {
                     if totalTasksCount > 0 {
                         let progress = Double(completedTasksCount) / Double(totalTasksCount)
                         ProgressView(value: progress) {
-                            Text("Progress")
+                            Text(LocalizedStringKey("progress"))
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }

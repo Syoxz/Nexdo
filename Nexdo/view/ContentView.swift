@@ -14,7 +14,7 @@ struct ContentView: View {
                     }
                     .tag(1)
 
-                SprintView()
+                SprintDashboardView()
                     .tabItem {
                         Image(systemName: "timer")
                         Text("Sprint")

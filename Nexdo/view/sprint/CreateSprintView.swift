@@ -71,7 +71,7 @@ struct CreateSprintView: View {
             }
         }
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
-        .navigationTitle("Create Sprint")
+        .navigationTitle(LocalizedStringKey("sprint_create_title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -84,7 +84,7 @@ struct CreateSprintView: View {
         .overlay (
             Group {
                 if showToast {
-                    ToastView(message: "create_sprint_success")
+                    ToastView(message: LocalizedStringKey("create_sprint_success"))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                         .animation(.easeInOut, value: showToast)
                 }

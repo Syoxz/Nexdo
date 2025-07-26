@@ -1,0 +1,347 @@
+{
+  "sourceLanguage" : "de",
+  "strings" : {
+    "%@ - %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ - %2$@"
+          }
+        }
+      }
+    },
+    "%lld of %lld tasks completed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld tasks completed"
+          }
+        }
+      }
+    },
+    "actions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktionen"
+          }
+        }
+      }
+    },
+    "Are you sure you want to delete this sprint?" : {
+
+    },
+    "Assign Open Tasks" : {
+
+    },
+    "Backlog" : {
+
+    },
+    "cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+
+    },
+    "Close" : {
+
+    },
+    "config" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfig"
+          }
+        }
+      }
+    },
+    "create" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellen"
+          }
+        }
+      }
+    },
+    "Create Sprint" : {
+
+    },
+    "create_sprint_success" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint erfolgreich erstellt"
+          }
+        }
+      }
+    },
+    "Created" : {
+
+    },
+    "current_sprint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Sprint"
+          }
+        }
+      }
+    },
+    "Dates" : {
+
+    },
+    "delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        }
+      }
+    },
+    "Delete" : {
+
+    },
+    "Description" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit Sprint" : {
+
+    },
+    "end" : {
+
+    },
+    "End" : {
+
+    },
+    "Ends in %lld day%@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Ends in %1$lld day%2$@"
+          }
+        }
+      }
+    },
+    "error" : {
+
+    },
+    "Error" : {
+
+    },
+    "Keine Tasks vorhanden" : {
+
+    },
+    "No Current Sprint" : {
+
+    },
+    "No open tasks available... \nCreate tasks to assign them to this sprint in Backlog." : {
+
+    },
+    "No Sprints Yet" : {
+
+    },
+    "not_implemented" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht implementiert"
+          }
+        }
+      }
+    },
+    "OK" : {
+
+    },
+    "progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortschritt"
+          }
+        }
+      }
+    },
+    "remove_due_date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entferne Fälligkeitsdatum"
+          }
+        }
+      }
+    },
+    "save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern"
+          }
+        }
+      }
+    },
+    "Save" : {
+
+    },
+    "Set Due Date" : {
+
+    },
+    "Sprint" : {
+
+    },
+    "Sprint completed on %@" : {
+
+    },
+    "sprint_config_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint Konfiguration"
+          }
+        }
+      }
+    },
+    "sprint_create_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint erstellen"
+          }
+        }
+      }
+    },
+    "sprint_overview_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint Übersicht"
+          }
+        }
+      }
+    },
+    "Sprints" : {
+
+    },
+    "start" : {
+
+    },
+    "Start" : {
+
+    },
+    "Start organizing your work by creating a sprint." : {
+
+    },
+    "Start: %@" : {
+
+    },
+    "Stop" : {
+
+    },
+    "Task Details" : {
+
+    },
+    "task_add" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufgabe hinzufügen"
+          }
+        }
+      }
+    },
+    "task_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibung"
+          }
+        }
+      }
+    },
+    "task_due_date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fälligkeitsdatum"
+          }
+        }
+      }
+    },
+    "task_name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name der Aufgabe"
+          }
+        }
+      }
+    },
+    "task_new" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Aufgabe"
+          }
+        }
+      }
+    },
+    "Tasks" : {
+
+    },
+    "Title" : {
+
+    }
+  },
+  "version" : "1.0"
+}

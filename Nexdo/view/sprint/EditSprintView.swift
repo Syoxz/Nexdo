@@ -48,13 +48,13 @@ struct EditSprintView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", role: .cancel) {
+                    Button(LocalizedStringKey("cancel"), role: .cancel) {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(LocalizedStringKey("save")) {
                         editSprint()
                         if !showAlert {
                             dismiss()
@@ -63,7 +63,7 @@ struct EditSprintView: View {
                     .disabled(startDate >= endDate)
                 }
             }
-            .alert("Error", isPresented: $showAlert) {
+            .alert(LocalizedStringKey("error"), isPresented: $showAlert) {
                     Button("OK", role: .cancel) { }
             } message: {
                 Text(errorMessage)
@@ -97,9 +97,9 @@ struct EditSprintView: View {
 
             Card {
                 VStack(spacing: 12) {
-                    AutoCloseDatePicker(date: $startDate, label: "Start")
+                    AutoCloseDatePicker(date: $startDate, label: LocalizedStringKey("start"))
                     Divider()
-                    AutoCloseDatePicker(date: $endDate, label: "End")
+                    AutoCloseDatePicker(date: $endDate, label: LocalizedStringKey("end"))
                 }
                 .padding()
             }
