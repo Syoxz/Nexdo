@@ -32,9 +32,9 @@ struct TaskRow: View {
         }
         .strikethrough(isDone, color: .primary)
         .padding()
-        .background(Color(.systemBackground))
+        .background(.thinMaterial)
         .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
+        .shadow(color: Color.black.opacity(0.2), radius: 6, x: 0, y: 3)
     }
     
     private func toggleStatus(for task: Task) {
