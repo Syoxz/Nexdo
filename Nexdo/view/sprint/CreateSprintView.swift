@@ -35,9 +35,9 @@ struct CreateSprintView: View {
                         
                         Card {
                             VStack(spacing: 12) {
-                                AutoCloseDatePicker(date: $startDate, label: "Start")
+                                AutoCloseDatePicker(date: $startDate, label: LocalizedStringKey("start"))
                                 Divider()
-                                AutoCloseDatePicker(date: $endDate, label: "End")
+                                AutoCloseDatePicker(date: $endDate, label: LocalizedStringKey("end"))
                             }
                             .padding()
                         }
@@ -45,7 +45,7 @@ struct CreateSprintView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Assign Open Tasks")
+                        Text(LocalizedStringKey("assign_open_tasks"))
                             .font(.title3.bold())
                             .padding(.horizontal)
                         
@@ -75,7 +75,7 @@ struct CreateSprintView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Save") {
+                Button(LocalizedStringKey("save")) {
                     saveSprint()
                 }
                 .disabled(startDate >= endDate)

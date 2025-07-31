@@ -68,7 +68,7 @@ struct CreateTaskView: View {
             try modelContext.save()
             dismiss()
         } catch {
-            print("❌ Failed to save task:", error)
+            print("Failed to save task:", error)
         }
     }
 }

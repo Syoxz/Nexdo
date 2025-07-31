@@ -1,5 +1,7 @@
 import SwiftUI
-
+/**
+    DatePicker Menu closes automatically after a user picked a date
+ */
 struct AutoCloseDatePicker : View {
     @State private var calendarId: Int = 0
     @Binding var date: Date

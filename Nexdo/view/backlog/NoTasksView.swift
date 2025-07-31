@@ -1,7 +1,7 @@
 import SwiftUI
 
 
-struct EmptyTaskView: View {
+struct NoTasksView: View {
     var body: some View {
         VStack(spacing: 16) {
             Spacer()

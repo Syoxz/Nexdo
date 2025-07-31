@@ -35,8 +35,15 @@
     "Are you sure you want to delete this sprint?" : {
 
     },
-    "Assign Open Tasks" : {
-
+    "assign_open_tasks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offene Aufgaben zuweisen"
+          }
+        }
+      }
     },
     "Backlog" : {
 
@@ -51,12 +58,6 @@
           }
         }
       }
-    },
-    "Cancel" : {
-
-    },
-    "Close" : {
-
     },
     "config" : {
       "extractionState" : "manual",
@@ -125,20 +126,24 @@
     "Delete" : {
 
     },
-    "Description" : {
+    "delete_sprint" : {
 
     },
-    "Edit" : {
+    "Description" : {
 
     },
     "Edit Sprint" : {
 
     },
     "end" : {
-
-    },
-    "End" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende"
+          }
+        }
+      }
     },
     "Ends in %lld day%@" : {
       "localizations" : {
@@ -215,9 +220,6 @@
         }
       }
     },
-    "Save" : {
-
-    },
     "Set Due Date" : {
 
     },
@@ -266,16 +268,10 @@
     "start" : {
 
     },
-    "Start" : {
-
-    },
     "Start organizing your work by creating a sprint." : {
 
     },
     "Start: %@" : {
-
-    },
-    "Stop" : {
 
     },
     "Task Details" : {

@@ -1,8 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @State private var selectedTab = 0
     @EnvironmentObject private var navService: NavigationService
+    @Environment(\.modelContext) private var modelContext
+
 
     var body: some View {
         NavigationStack(path: $navService.path) {
@@ -27,7 +30,7 @@ struct ContentView: View {
                 case .createSprint:
                     CreateSprintView()
                 case .sprintList:
-                    SprintDetailView()
+                    SprintListView()
                 case .sprintEdit(let sprint):
                     EditSprintView(sprint: sprint)
                 case .sprintConfig:

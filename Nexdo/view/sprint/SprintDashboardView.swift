@@ -2,17 +2,14 @@ import SwiftUI
 import SwiftData
 
 struct SprintDashboardView: View {
-    @EnvironmentObject var navService: NavigationService
-
-    @State private var showCreateSprint = false
-    @State private var showConfig = false
-    @State private var showSprints = false
+    @EnvironmentObject private var navService: NavigationService
+    @EnvironmentObject private var sprintService: SprintService
 
     
-    @Query(filter: Sprint.currentSprint())
-    private var currentSprints: [Sprint]
-    
-    
+    @State private var showCreateSprint: Bool = false
+    @State private var showConfig: Bool = false
+    @State private var showSprints: Bool = false
+
     
     var body: some View {
         VStack() {
@@ -75,7 +72,7 @@ struct SprintDashboardView: View {
             .foregroundColor(.blue)
 
             
-            if let sprint = currentSprints.first {
+            if let sprint = sprintService.getCurrentSprint() {
                 let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: sprint.endDate).day ?? 0
                 let totalTasksCount = sprint.tasks.count
                 let completedTasksCount = sprint.tasks.filter { $0.status == TaskStatus.done.rawValue }.count

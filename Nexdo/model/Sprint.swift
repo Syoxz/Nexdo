@@ -27,4 +27,12 @@ extension Sprint {
             sprint.startDate <= currentDate && sprint.endDate >= currentDate
         }
     }
+    
+    static func expiredSprints() -> Predicate<Sprint> {
+        let currentDate = Date.now
+        let completedStatus = SprintStatus.completed.rawValue
+        return #Predicate<Sprint> { sprint in
+            sprint.endDate <= currentDate && sprint.status != completedStatus
+        }
+    }
 }

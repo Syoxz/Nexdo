@@ -47,12 +47,6 @@ struct EditSprintView: View {
             .navigationTitle("Edit Sprint")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(LocalizedStringKey("cancel"), role: .cancel) {
-                        dismiss()
-                    }
-                }
-
                 ToolbarItem(placement: .confirmationAction) {
                     Button(LocalizedStringKey("save")) {
                         editSprint()
