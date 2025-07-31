@@ -35,7 +35,7 @@ struct SprintDashboardView: View {
                                 navService.goToCreateSprint()
                             }
                             
-                            SprintButton(title: "Sprints", icon: "list.bullet.rectangle", color: .green) {
+                            SprintButton(title: LocalizedStringKey("sprints"), icon: "list.bullet.rectangle", color: .green) {
                                 navService.goToSprintList()
                             }
 
@@ -78,11 +78,11 @@ struct SprintDashboardView: View {
                 let completedTasksCount = sprint.tasks.filter { $0.status == TaskStatus.done.rawValue }.count
                 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Start: \(sprint.startDate.formatted(date: .abbreviated, time: .omitted))")
+                    Text(LocalizedStringKey("started_at: \(sprint.startDate.formatted(date: .abbreviated, time: .omitted))"))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    Text("Ends in \(daysRemaining) day\(daysRemaining == 1 ? "" : "s")")
+                    Text(LocalizedStringKey("ends_in_\(daysRemaining)_day"))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
@@ -95,13 +95,13 @@ struct SprintDashboardView: View {
                         }
                         .progressViewStyle(LinearProgressViewStyle(tint: .blue))
                         
-                        Text("\(completedTasksCount) of \(totalTasksCount) tasks completed")
+                        Text(LocalizedStringKey("\(completedTasksCount)_\(totalTasksCount)_tasks_completed"))
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     }
                 }
             } else {
-                Text("No Current Sprint")
+                Text(LocalizedStringKey("no_sprints"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }

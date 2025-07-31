@@ -13,14 +13,14 @@ struct ContentView: View {
                 BacklogView()
                     .tabItem {
                         Image(systemName: "list.bullet.rectangle")
-                        Text("Backlog")
+                        Text(LocalizedStringKey("backlog"))
                     }
                     .tag(1)
 
                 SprintDashboardView()
                     .tabItem {
                         Image(systemName: "timer")
-                        Text("Sprint")
+                        Text(LocalizedStringKey("sprint"))
                     }
                     .tag(2)
             }

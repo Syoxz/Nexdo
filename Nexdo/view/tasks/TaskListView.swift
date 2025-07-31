@@ -20,7 +20,7 @@ struct TaskListView: View {
                     Button(role: .destructive) {
                         deleteTask(task)
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label(LocalizedStringKey("delete"), systemImage: "trash")
                     }
                 }
                 .listRowSeparator(.hidden)

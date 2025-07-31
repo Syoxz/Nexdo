@@ -11,11 +11,11 @@ struct TaskDetailView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Title", text: $task.name)
+                TextField(LocalizedStringKey("task_name"), text: $task.name)
                     .font(.title2)
                     .padding(.vertical, 4)
 
-                TextField("Description", text: $task.taskDescription, axis: .vertical)
+                TextField(LocalizedStringKey("task_description"), text: $task.taskDescription, axis: .vertical)
                     .lineLimit(3...6)
                     .padding(.vertical, 4)
             }
@@ -32,18 +32,18 @@ struct TaskDetailView: View {
                             task.dueDate = Date()
                         }
                     } label: {
-                        Label("Set Due Date", systemImage: "calendar")
+                        Label(LocalizedStringKey("task_due_date"), systemImage: "calendar")
                     }
                 }
             }
 
-            Section("Created") {
+            Section(LocalizedStringKey("created_at")) {
                 Text(task.createdAt.formatted(date: .abbreviated, time: .omitted))
                     .foregroundColor(.secondary)
             }
 
         }
-        .navigationTitle("Task Details")
+        .navigationTitle(LocalizedStringKey("task_details"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }

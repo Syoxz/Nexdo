@@ -9,14 +9,15 @@
             "value" : "%1$@ - %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
-    "%lld of %lld tasks completed" : {
+    "%lld_%lld_tasks_completed" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld of %2$lld tasks completed"
+            "state" : "translated",
+            "value" : "%1$lld von %2$lld Aufgaben erledigt"
           }
         }
       }
@@ -32,9 +33,6 @@
         }
       }
     },
-    "Are you sure you want to delete this sprint?" : {
-
-    },
     "assign_open_tasks" : {
       "localizations" : {
         "de" : {
@@ -45,8 +43,15 @@
         }
       }
     },
-    "Backlog" : {
-
+    "backlog" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backlog"
+          }
+        }
+      }
     },
     "cancel" : {
       "extractionState" : "manual",
@@ -70,6 +75,16 @@
         }
       }
     },
+    "confirmation_delete_sprint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Möchten Sie diesen Sprint wirklich löschen?"
+          }
+        }
+      }
+    },
     "create" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -81,8 +96,15 @@
         }
       }
     },
-    "Create Sprint" : {
-
+    "create_sprint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint erstellen"
+          }
+        }
+      }
     },
     "create_sprint_success" : {
       "extractionState" : "manual",
@@ -95,8 +117,15 @@
         }
       }
     },
-    "Created" : {
-
+    "created_at" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellt am"
+          }
+        }
+      }
     },
     "current_sprint" : {
       "extractionState" : "manual",
@@ -109,8 +138,25 @@
         }
       }
     },
-    "Dates" : {
-
+    "currently_assigned_tasks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell zugewiesene Aufgaben"
+          }
+        }
+      }
+    },
+    "date_range" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum"
+          }
+        }
+      }
     },
     "delete" : {
       "extractionState" : "manual",
@@ -123,17 +169,15 @@
         }
       }
     },
-    "Delete" : {
-
-    },
-    "delete_sprint" : {
-
-    },
-    "Description" : {
-
-    },
-    "Edit Sprint" : {
-
+    "edit_sprint_title" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint editieren"
+          }
+        }
+      }
     },
     "end" : {
       "localizations" : {
@@ -145,33 +189,87 @@
         }
       }
     },
-    "Ends in %lld day%@" : {
+    "ends_in_%lld_day" : {
       "localizations" : {
         "de" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Ends in %1$lld day%2$@"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Endet in %lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Endet in %lld Tagen"
+                }
+              }
+            }
           }
         }
       }
     },
     "error" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehler"
+          }
+        }
+      }
     },
-    "Error" : {
-
+    "no_currently_assigned_tasks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell keine zugewiesenen Aufgaben"
+          }
+        }
+      }
     },
-    "Keine Tasks vorhanden" : {
-
+    "no_open_tasks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine offenen Aufgaben"
+          }
+        }
+      }
     },
-    "No Current Sprint" : {
-
+    "no_open_tasks_sprint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es gibt aktuell keine offenen Aufgaben. Im Backlog kannst du jeder Zeit neue Aufgaben erstellen."
+          }
+        }
+      }
     },
-    "No open tasks available... \nCreate tasks to assign them to this sprint in Backlog." : {
-
+    "no_sprints" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Sprints"
+          }
+        }
+      }
     },
-    "No Sprints Yet" : {
-
+    "no_sprints_create_sprint)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte mit der Organisation deiner Arbeit: Erstelle jetzt deinen ersten Sprint.\n"
+          }
+        }
+      }
     },
     "not_implemented" : {
       "extractionState" : "manual",
@@ -184,8 +282,15 @@
         }
       }
     },
-    "OK" : {
-
+    "ok" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "progress" : {
       "extractionState" : "manual",
@@ -220,14 +325,25 @@
         }
       }
     },
-    "Set Due Date" : {
-
+    "sprint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint"
+          }
+        }
+      }
     },
-    "Sprint" : {
-
-    },
-    "Sprint completed on %@" : {
-
+    "sprint_completed_on %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprint fertiggestellt am %@"
+          }
+        }
+      }
     },
     "sprint_config_title" : {
       "extractionState" : "manual",
@@ -262,20 +378,35 @@
         }
       }
     },
-    "Sprints" : {
-
+    "sprints" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprints"
+          }
+        }
+      }
     },
     "start" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        }
+      }
     },
-    "Start organizing your work by creating a sprint." : {
-
-    },
-    "Start: %@" : {
-
-    },
-    "Task Details" : {
-
+    "started_at: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begonnen am: %@"
+          }
+        }
+      }
     },
     "task_add" : {
       "extractionState" : "manual",
@@ -295,6 +426,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beschreibung"
+          }
+        }
+      }
+    },
+    "task_details" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailansicht"
           }
         }
       }
@@ -332,11 +473,15 @@
         }
       }
     },
-    "Tasks" : {
-
-    },
-    "Title" : {
-
+    "tasks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufgaben"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

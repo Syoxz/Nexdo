@@ -37,14 +37,14 @@ struct EditSprintView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     dateSection
-                    taskListSection(title: "Currently Assigned Tasks", tasks: currentTasks, emptyMessage: "No currently saved Task for that Sprint")
-                    taskListSection(title: "Assign Open Tasks", tasks: openTasks, emptyMessage: "No open tasks available...\nCreate tasks to assign them to this sprint in Backlog.")
+                    taskListSection(title: LocalizedStringKey("currently_assigned_tasks"), tasks: currentTasks, emptyMessage: LocalizedStringKey("no_currently_assigned_tasks"))
+                    taskListSection(title: LocalizedStringKey("assign_open_tasks"), tasks: openTasks, emptyMessage: LocalizedStringKey("no_open_tasks"))
                     Spacer()
                 }
                 .padding(.top)
             }
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
-            .navigationTitle("Edit Sprint")
+            .navigationTitle(LocalizedStringKey("edit_sprint_title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -58,7 +58,7 @@ struct EditSprintView: View {
                 }
             }
             .alert(LocalizedStringKey("error"), isPresented: $showAlert) {
-                    Button("OK", role: .cancel) { }
+                    Button("ok", role: .cancel) { }
             } message: {
                 Text(errorMessage)
             }
@@ -66,7 +66,6 @@ struct EditSprintView: View {
     }
 
 
-    //TODO: Später in einen Service auslagern für beide Views
     private func showError(_ message: String) {
         errorMessage = message
         showAlert = true
@@ -85,7 +84,7 @@ struct EditSprintView: View {
 
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Dates")
+            Text(LocalizedStringKey("date_range"))
                 .font(.title3.bold())
                 .padding(.horizontal)
 
@@ -101,7 +100,7 @@ struct EditSprintView: View {
         }
     }
 
-    private func taskListSection(title: String, tasks: [Task], emptyMessage: String) -> some View {
+    private func taskListSection(title: LocalizedStringKey, tasks: [Task], emptyMessage: LocalizedStringKey) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
                 .font(.title3.bold())

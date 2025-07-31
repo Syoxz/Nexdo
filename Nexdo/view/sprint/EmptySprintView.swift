@@ -14,12 +14,12 @@ struct EmptySprintView: View {
                 .foregroundColor(.accentColor.opacity(0.6))
 
             VStack(spacing: 8) {
-                Text("No Sprints Yet")
+                Text(LocalizedStringKey("no_sprints"))
                     .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
 
-                Text("Start organizing your work by creating a sprint.")
+                Text(LocalizedStringKey("no_sprints_create_sprint)"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -30,7 +30,7 @@ struct EmptySprintView: View {
             Button(action: {
                 navService.goToCreateSprint()
             }) {
-                Label("Create Sprint", systemImage: "plus")
+                Label(LocalizedStringKey("create_sprint"), systemImage: "plus")
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.accentColor)

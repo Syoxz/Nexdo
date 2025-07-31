@@ -5,7 +5,9 @@ struct CreateSprintView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var navService: NavigationService
+    @EnvironmentObject var sprintService: SprintService
 
+    
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date().addingTimeInterval(7 * 24 * 60 * 60)
     @State private var status: SprintStatus = .planned
@@ -29,7 +31,7 @@ struct CreateSprintView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Dates")
+                        Text(LocalizedStringKey("date_range"))
                             .font(.title3.bold())
                             .padding(.horizontal)
                         
@@ -50,7 +52,7 @@ struct CreateSprintView: View {
                             .padding(.horizontal)
                         
                         if openTasks.isEmpty {
-                            Text("No open tasks available... \nCreate tasks to assign them to this sprint in Backlog.")
+                            Text(LocalizedStringKey("no_open_tasks_sprint"))
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal)
@@ -91,8 +93,8 @@ struct CreateSprintView: View {
             },
             alignment: .top
         )
-        .alert("Error", isPresented: $showAlert) {
-            Button("OK", role: .cancel) { }
+        .alert(LocalizedStringKey("error"), isPresented: $showAlert) {
+            Button("ok", role: .cancel) { }
         } message: {
             Text(errorMessage)
         }
@@ -107,58 +109,30 @@ struct CreateSprintView: View {
     }
 
     private func saveSprint() {
-        let existingSprints = fetchExistingSprints()
-
-        // Check for overlapping sprints
-        let overlappingSprints = existingSprints.filter { existing in
-            return (startDate <= existing.endDate && endDate >= existing.startDate)
-        }
-
-        if let overlap = overlappingSprints.first {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            let start = formatter.string(from: overlap.startDate)
-            let end = formatter.string(from: overlap.endDate)
-
-            showError("You can't create a Sprint in this Date Range because there is a Sprint from \(start) to \(end) already.")
-            return
-        }
-
         let selectedTasks = openTasks.filter { selectedTaskIDs.contains($0.id) }
         let sprint = createSprint(with: selectedTasks)
-        assignTasks(selectedTasks, to: sprint)
-
-        modelContext.insert(sprint)
-
         do {
-            try modelContext.save()
-            
+            try sprintService.saveSprint(sprint, with: selectedTasks)
             showToast = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 showToast = false
                 dismiss()
             }
+        } catch SprintError.overlappingDates(let start, let end) {
+            let startString = DateUtils.formatDateToString(for: start)
+            let endString = DateUtils.formatDateToString(for: end)
+            showError(with: "You can't create a Sprint in this Date Range because there is a Sprint from \(startString) to \(endString) already.")
         } catch {
             print("Failed to save sprint: \(error)")
-            showError("Failed to save sprint. Please try again.")
+            showError(with: "Failed to save sprint. Please try again.")
         }
     }
 
-    private func showError(_ message: String) {
+    private func showError(with message: String) {
         errorMessage = message
         showAlert = true
     }
-
-    private func fetchExistingSprints() -> [Sprint] {
-        let descriptor = FetchDescriptor<Sprint>()
-        do {
-            return try modelContext.fetch(descriptor)
-        } catch {
-            print("Failed to fetch sprints: \(error)")
-            return []
-        }
-    }
-
+    
     private func createSprint(with tasks: [Task]) -> Sprint {
         Sprint(
             startDate: startDate,
@@ -166,12 +140,5 @@ struct CreateSprintView: View {
             status: status,
             tasks: tasks
         )
-    }
-
-    private func assignTasks(_ tasks: [Task], to sprint: Sprint) {
-        for task in tasks {
-            task.status = TaskStatus.planned.rawValue
-            task.sprint = sprint
-        }
     }
 }
