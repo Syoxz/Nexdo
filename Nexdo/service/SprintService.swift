@@ -8,21 +8,17 @@ class SprintService : ObservableObject {
     
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
-        self.storedSprints = getSprints()
+        self.storedSprints = loadSprints()
     }
     
-    public func markExpiredSprintsCompleted() {
+    public func markExpiredSprintsCompleted() throws {
         let completed = SprintStatus.completed.rawValue
         let descriptor = FetchDescriptor<Sprint>(predicate: Sprint.expiredSprints())
-        do {
-            let expiredSprints = try modelContext.fetch(descriptor)
-            for sprint in expiredSprints {
-                sprint.status = completed
-            }
-            try modelContext.save()
-        } catch {
-            print("Error updating expired sprints: \(error)")
+        let expiredSprints = try modelContext.fetch(descriptor)
+        for sprint in expiredSprints {
+            sprint.status = completed
         }
+        try modelContext.save()
     }
     
     public func updateStatus(_ status: SprintStatus, for sprint: Sprint) {
@@ -30,7 +26,7 @@ class SprintService : ObservableObject {
         try? modelContext.save()
     }
     
-    private func getSprints() -> [Sprint] {
+    private func loadSprints() -> [Sprint] {
         let descriptor = FetchDescriptor<Sprint>(
             sortBy: [SortDescriptor(\.startDate, order: .forward)]
         )
@@ -54,9 +50,64 @@ class SprintService : ObservableObject {
         
         assignTasks(selectedTasks, to: newSprint)
         modelContext.insert(newSprint)
-        storedSprints.append(newSprint)
         try modelContext.save()
+        
+        // Reload sprints after saving (to reflect order)
+        storedSprints = loadSprints()
     }
+    
+    public func editSprint(for sprint: Sprint, with selectedTasks: [Task], with selectedTaskIDs: Set<UUID>, with newStartDate: Date, with newEndDate: Date) throws {
+        let currentTasks = sprint.tasks
+        let overlappingSprints = storedSprints.filter { existing in
+            return (sprint.id != existing.id && (newStartDate <= existing.endDate && newEndDate >= existing.startDate))
+        }
+        
+        if let overlap = overlappingSprints.first {
+            throw SprintError.overlappingDates(start: overlap.startDate, end: overlap.endDate)
+        }
+                
+        for task in currentTasks where !selectedTaskIDs.contains(task.id) {
+            unassignFromSprint(task)
+        }
+
+        for task in selectedTasks {
+            assign(task, to: sprint)
+        }
+        
+        updateSprint(sprint, with: selectedTasks, with: newStartDate, with: newEndDate)
+        try modelContext.save()
+        
+    }
+    
+    private func assign(_ task: Task, to sprint: Sprint) {
+        if (isTaskDone(task)) {
+            task.status = TaskStatus.done.rawValue
+        } else {
+            task.status = TaskStatus.planned.rawValue
+        }
+        task.sprint = sprint
+    }
+
+    private func unassignFromSprint(_ task: Task) {
+        if (isTaskDone(task)) {
+            task.status = TaskStatus.done.rawValue
+        } else {
+            task.status = TaskStatus.open.rawValue
+        }
+        task.sprint = nil
+    }
+    
+    private func isTaskDone(_ task: Task) -> Bool {
+        return task.status == TaskStatus.done.rawValue
+    }
+
+    private func updateSprint(_ sprint: Sprint, with tasks: [Task], with newStartDate: Date, with newEndDate: Date) {
+        sprint.startDate = newStartDate
+        sprint.endDate = newEndDate
+        sprint.status = SprintStatus.planned.rawValue
+        sprint.tasks = tasks
+    }
+    
 
     private func assignTasks(_ tasks: [Task], to sprint: Sprint) {
         for task in tasks {
@@ -64,27 +115,24 @@ class SprintService : ObservableObject {
             task.sprint = sprint
         }
     }
-    
-    public func deleteSprint(_ sprint: Sprint) {
-        do {
-            sprint.tasks.forEach { $0.status = TaskStatus.open.rawValue }
-            if let index = storedSprints.firstIndex(where: { $0.id == sprint.id }) {
-                storedSprints.remove(at: index)
-            }
-            modelContext.delete(sprint)
-            try modelContext.save()
 
-        }catch {
-            print("Failed to delete sprint: \(error)")
+    public func deleteSprint(_ sprint: Sprint) throws {
+        sprint.tasks.forEach { $0.status = TaskStatus.open.rawValue }
+        if let index = storedSprints.firstIndex(where: { $0.id == sprint.id }) {
+            storedSprints.remove(at: index)
         }
-    
+        modelContext.delete(sprint)
+        try modelContext.save()
     }
-
+    
+    
     
     public func getCurrentSprint() -> Sprint? {
+        let today = Calendar.current.startOfDay(for: Date())
         return storedSprints.first(where: {
-            $0.startDate <= Date() && $0.endDate >= Date()
+            let start = Calendar.current.startOfDay(for: $0.startDate)
+            let end = Calendar.current.startOfDay(for: $0.endDate)
+            return start <= today && end >= today
         })
     }
-
 }

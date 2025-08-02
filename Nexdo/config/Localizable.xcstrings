@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
+    "" : {
+
+    },
     "%@ - %@" : {
       "localizations" : {
         "de" : {
@@ -221,6 +224,9 @@
         }
       }
     },
+    "Failed to save sprint. Please try again." : {
+
+    },
     "no_currently_assigned_tasks" : {
       "localizations" : {
         "de" : {
@@ -363,6 +369,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sprint erstellen"
+          }
+        }
+      }
+    },
+    "sprint_overlapping_from %@ to %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Sprint konnte nicht gespeichert werden, da es bereits einen Sprint im Zeitraum von %1$@ - %2$@ gibt."
           }
         }
       }

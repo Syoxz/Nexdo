@@ -38,17 +38,20 @@ struct TaskRow: View {
     }
     
     private func toggleStatus(for task: Task) {
-        let open = TaskStatus.open.rawValue
-        let planned = TaskStatus.planned.rawValue
-        let done = TaskStatus.done.rawValue
+        do {
+            let open = TaskStatus.open.rawValue
+            let planned = TaskStatus.planned.rawValue
+            let done = TaskStatus.done.rawValue
 
-        let isTaskInSprint = task.sprint != nil
-        if isTaskInSprint {
-            task.status = task.status == planned ? done : planned
-        } else {
-            task.status = task.status == open ? done : open
+            let isTaskInSprint = task.sprint != nil
+            if isTaskInSprint {
+                task.status = task.status == planned ? done : planned
+            } else {
+                task.status = task.status == open ? done : open
+            }
+            try modelContext.save()
+        } catch {
+            print("Failed to toggle task status: \(error.localizedDescription)")
         }
-        try? modelContext.save()
-        
     }
 }

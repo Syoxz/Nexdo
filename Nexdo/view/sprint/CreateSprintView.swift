@@ -14,7 +14,7 @@ struct CreateSprintView: View {
     @State private var selectedTaskIDs: Set<UUID> = []
     @State private var calendarId: Int = 0
     @State private var showAlert = false
-    @State private var errorMessage = ""
+    @State private var errorMessage: LocalizedStringKey = ""
     @State private var showToast = false
 
     private static let openRaw = TaskStatus.open.rawValue
@@ -121,14 +121,14 @@ struct CreateSprintView: View {
         } catch SprintError.overlappingDates(let start, let end) {
             let startString = DateUtils.formatDateToString(for: start)
             let endString = DateUtils.formatDateToString(for: end)
-            showError(with: "You can't create a Sprint in this Date Range because there is a Sprint from \(startString) to \(endString) already.")
+            showError(with: LocalizedStringKey("sprint_overlapping_from \(startString) to \(endString)"))
         } catch {
             print("Failed to save sprint: \(error)")
             showError(with: "Failed to save sprint. Please try again.")
         }
     }
 
-    private func showError(with message: String) {
+    private func showError(with message: LocalizedStringKey) {
         errorMessage = message
         showAlert = true
     }

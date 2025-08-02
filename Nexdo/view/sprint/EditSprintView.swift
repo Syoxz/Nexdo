@@ -4,13 +4,14 @@ import SwiftData
 struct EditSprintView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var sprintService: SprintService
 
     @State private var startDate: Date
     @State private var endDate: Date
     @State private var status: String
     @State private var selectedTaskIDs: Set<UUID> = []
     @State private var showAlert = false
-    @State private var errorMessage = ""
+    @State private var errorMessage: LocalizedStringKey = ""
     let sprint: Sprint
 
     @Query(
@@ -62,23 +63,6 @@ struct EditSprintView: View {
             } message: {
                 Text(errorMessage)
             }
-        }
-    }
-
-
-    private func showError(_ message: String) {
-        errorMessage = message
-        showAlert = true
-    }
-
-
-    private func fetchExistingSprints() -> [Sprint] {
-        let descriptor = FetchDescriptor<Sprint>()
-        do {
-            return try modelContext.fetch(descriptor)
-        } catch {
-            print("Failed to fetch sprints: \(error)")
-            return []
         }
     }
 
@@ -134,68 +118,23 @@ struct EditSprintView: View {
     }
 
     private func editSprint() {
-        let existingSprints = fetchExistingSprints()
-
-        let overlappingSprints = existingSprints.filter { existing in
-            return (sprint.id != existing.id && (startDate <= existing.endDate && endDate >= existing.startDate))
-        }
-        if let overlap = overlappingSprints.first {
-            // Show error message to user
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .medium
-            let start = dateFormatter.string(from: overlap.startDate)
-            let end = dateFormatter.string(from: overlap.endDate)
-            
-            showError("You can't create a Sprint in this Date Range because there is a Sprint from \(start) to \(end) already.")
-            return
-        }
-        
         let selectedCurrent = currentTasks.filter { selectedTaskIDs.contains($0.id) }
         let selectedOpen = openTasks.filter { selectedTaskIDs.contains($0.id) }
         let selectedTasks = selectedCurrent + selectedOpen
         
-        for task in currentTasks where !selectedTaskIDs.contains(task.id) {
-            unassign(task)
-        }
-
-        for task in selectedTasks {
-            assign(task, to: sprint)
-        }
-        
-        updateSprint(with: selectedTasks)
         do {
-            try modelContext.save()
+            try sprintService.editSprint(for: sprint, with: selectedTasks, with: selectedTaskIDs, with: startDate, with: endDate)
+        } catch SprintError.overlappingDates(let start, let end) {
+            let startString = DateUtils.formatDateToString(for: start)
+            let endString = DateUtils.formatDateToString(for: end)
+            showError(with: LocalizedStringKey("sprint_overlapping_from \(startString) to \(endString)"))
         } catch {
             print("Failed to save sprint: \(error)")
         }
     }
-
-    private func assign(_ task: Task, to sprint: Sprint) {
-        if (isTaskDone(task)) {
-            task.status = TaskStatus.done.rawValue
-        } else {
-            task.status = TaskStatus.planned.rawValue
-        }
-        task.sprint = sprint
-    }
-
-    private func unassign(_ task: Task) {
-        if (isTaskDone(task)) {
-            task.status = TaskStatus.done.rawValue
-        } else {
-            task.status = TaskStatus.open.rawValue
-        }
-        task.sprint = nil
-    }
     
-    private func isTaskDone(_ task: Task) -> Bool {
-        return task.status == TaskStatus.done.rawValue
-    }
-
-    private func updateSprint(with tasks: [Task]) {
-        sprint.startDate = startDate
-        sprint.endDate = endDate
-        sprint.status = SprintStatus.planned.rawValue
-        sprint.tasks = tasks
+    private func showError(with message: LocalizedStringKey) {
+        errorMessage = message
+        showAlert = true
     }
 }

@@ -32,7 +32,11 @@ struct TaskListView: View {
     }
 
     private func deleteTask(_ task: Task) {
-        modelContext.delete(task)
-        try? modelContext.save()
+        do {
+            modelContext.delete(task)
+            try modelContext.save()
+        } catch {
+            print("Error deleting task: \(error)")
+        }
     }
 }

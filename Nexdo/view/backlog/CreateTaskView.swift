@@ -35,16 +35,16 @@ struct CreateTaskView: View {
                     }
                 }
             }
-            .navigationTitle(Text("task_new"))
+            .navigationTitle(Text(LocalizedStringKey("task_new")))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("cancel") {
+                    Button(LocalizedStringKey("cancel")) {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("save") {
+                    Button(LocalizedStringKey("save")) {
                         saveTask()
                     }
                     .disabled(taskName.trimmingCharacters(in: .whitespaces).isEmpty)

@@ -13,26 +13,26 @@ struct ActionButtonsView: View {
             
             switch SprintStatus(rawValue: sprint.status) {
             case .active:
-                actionButton(systemName: "stop.fill", color: .red) {
+                ActionButton(systemName: "stop.fill", color: .red) {
                     sprintService.updateStatus(.planned, for: sprint)
                 }                
             case .planned:
-                actionButton(systemName: "trash.fill", color: .red, action: onDelete)
-                actionButton(systemName: "pencil", color: .gray) {
+                ActionButton(systemName: "trash.fill", color: .red, action: onDelete)
+                ActionButton(systemName: "pencil", color: .gray) {
                     navService.goToEditSprint(sprint)
                 }
-                actionButton(systemName: "play.fill", color: .green) {
+                ActionButton(systemName: "play.fill", color: .green) {
                     sprintService.updateStatus(.active, for: sprint)
                 }
             case .completed:
-                actionButton(systemName: "trash.fill", color: .red, action: onDelete)
+                ActionButton(systemName: "trash.fill", color: .red, action: onDelete)
             default:
                 EmptyView()
             }
         }
     }
     
-    private func actionButton(systemName: String, color: Color, action: @escaping () -> Void) -> some View {
+    private func ActionButton(systemName: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.title2)
